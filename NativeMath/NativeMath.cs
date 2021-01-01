@@ -1,6 +1,8 @@
 using GmodNET.API;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NativeMath
@@ -13,6 +15,46 @@ namespace NativeMath
 
 		private List<GCHandle> handles;
 
+		[UnmanagedCallersOnly(CallConvs = new Type[] { typeof(CallConvCdecl) })]
+		private static int Approach(IntPtr luaState)
+		{
+			ILua lua = GmodInterop.GetLuaFromState(luaState);
+			double current = Math.Abs(lua.GetNumber(1));
+			double target = lua.GetNumber(2);
+			double increment = lua.GetNumber(3);
+
+			if (current < target)
+			{
+				lua.PushNumber(Math.Min(current + increment, target));
+			}
+			else if (current > target)
+			{
+				lua.PushNumber(Math.Max(current - increment, target));
+			}
+			else
+			{
+				lua.PushNumber(target);
+			}
+			return 1;
+		}
+
+		[UnmanagedCallersOnly(CallConvs = new Type[] { typeof(CallConvCdecl) })]
+		private static int Distance(IntPtr luaState)
+		{
+			ILua lua = GmodInterop.GetLuaFromState(luaState);
+			double x1 = lua.GetNumber(1);
+			double y1 = lua.GetNumber(2);
+			double x2 = lua.GetNumber(3);
+			double y2 = lua.GetNumber(4);
+
+			double xd = x2 - x1;
+			double yd = y2 - y1;
+
+			lua.PushNumber(Math.Sqrt(xd * xd + yd * yd));
+
+			return 1;
+		}
+
 		public void Load(ILua lua, bool is_serverside, ModuleAssemblyLoadContext assembly_context)
 		{
 			lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
@@ -23,45 +65,19 @@ namespace NativeMath
 			{
 				lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
 				lua.GetField(-1, "math");
-				handles.Add(lua.PushManagedFunction((lua) =>
+				unsafe
 				{
-					double current = Math.Abs(lua.GetNumber(1));
-					double target = lua.GetNumber(2);
-					double increment = lua.GetNumber(3);
-
-					if (current < target)
-					{
-						lua.PushNumber(Math.Min(current + increment, target));
-					}
-					else if (current > target)
-					{
-						lua.PushNumber(Math.Max(current - increment, target));
-					}
-					else
-					{
-						lua.PushNumber(target);
-					}
-					return 1;
-				}));
+					lua.PushCFunction(&Approach);
+				}
 				lua.SetField(-2, "Approach");
 				lua.Pop();
 
 				lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
 				lua.GetField(-1, "math");
-				handles.Add(lua.PushManagedFunction((lua) =>
+				unsafe
 				{
-					double x1 = lua.GetNumber(1);
-					double y1 = lua.GetNumber(2);
-					double x2 = lua.GetNumber(3);
-					double y2 = lua.GetNumber(4);
-
-					double xd = x2 - x1;
-					double yd = y2 - y1;
-
-					lua.PushNumber(Math.Sqrt(xd * xd + yd * yd));
-
-					return 1;
-				}));
+					lua.PushCFunction(&Distance);
+				}
 				lua.SetField(-2, "Distance");
 				lua.Pop();
 				return 0;
