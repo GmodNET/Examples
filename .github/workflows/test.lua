@@ -1,6 +1,8 @@
 hook.Add("Tick", "Template_CloseServer", engine.CloseServer)
 require("dotnet")
 
+function donothingwithit(something) end
+
 local function benchmark_single(name, fn)
 	local startTime = SysTime()
 	fn()
@@ -33,7 +35,7 @@ local function run_test()
 	-----------------------
 
 	local lua_math_Approach = benchmark("math_Approach", function()
-		return math.Approach(0,100,20)
+		donothingwithit(math.Approach(0,100,20))
 	end)
 
 	PrintTable(lua_math_Approach)
@@ -43,7 +45,7 @@ local function run_test()
 	print(type(math.Approach))
 
 	local native_math_Approach = benchmark("math_Approach", function()
-		return math.Approach(0,100,20)
+		donothingwithit(math.Approach(0,100,20))
 	end)
 
 	PrintTable(native_math_Approach)
