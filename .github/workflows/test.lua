@@ -31,7 +31,7 @@ local function run_test()
 	benchmark("math_Approach", function()
 		local current = 0
 		for i=0,1000 do
-			current = math.Approach(0,100,0.1)
+			current = math.Approach(current,100,0.1)
 		end
 		print(current)
 	end)
@@ -41,7 +41,7 @@ local function run_test()
 	benchmark("math_Approach", function()
 		local current = 0
 		for i=0,1000 do
-			current = math.Approach(0,100,0.1)
+			current = math.Approach(current,100,0.1)
 		end
 		print(current)
 	end)
