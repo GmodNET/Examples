@@ -3,11 +3,11 @@ require("dotnet")
 
 function donothingwithit(something) end
 
-local function benchmark_single(name, fn)
+local function benchmark(name, fn)
 	local startTime = SysTime()
 	fn()
 	local elapsed = SysTime()-startTime
-	print(name.."_single"..elapsed)
+	print(name.." "..elapsed)
 	return elapsed
 end
 
@@ -21,35 +21,27 @@ local function benchmark_thousand(name, fn)
 	return elapsed
 end
 
-local function benchmark(name, fn)
-	return {
-		single = benchmark_single(name, fn),
-		thousand = benchmark_thousand(name, fn)
-	}
-end
-
 local function run_test()
 	local module_loaded = dotnet.load("NativeMath")
 	assert(module_loaded)
 
 	-----------------------
 
-	local lua_math_Approach = benchmark("math_Approach", function()
-		donothingwithit(math.Approach(0,100,20))
-	end)
+	local current = 0
 
-	PrintTable(lua_math_Approach)
+	benchmark("math_Approach", function()
+		current = math.Approach(0,100,0.1)
+		donothingwithit(current)
+	end)
 
 	NativeMath()
 
-	print(type(math.Approach))
-
-	local native_math_Approach = benchmark("math_Approach", function()
-		donothingwithit(math.Approach(0,100,20))
+	current = 0
+	benchmark("math_Approach", function()
+		current = math.Approach(current,100,0.1)
+		donothingwithit(current)
 	end)
 
-	PrintTable(native_math_Approach)
-	
 
 	-----------------------
 
