@@ -1,6 +1,8 @@
 hook.Add("Tick", "Template_CloseServer", engine.CloseServer)
 require("dotnet")
 
+jit.off()
+
 function donothingwithit(something) end
 
 local function benchmark(name, fn)
