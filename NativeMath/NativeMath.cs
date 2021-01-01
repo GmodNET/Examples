@@ -18,6 +18,30 @@ namespace NativeMath
 			NativeMathHandle = lua.PushManagedFunction((lua) =>
 			{
 				Console.WriteLine("native mafs");
+				lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
+				lua.GetField(-1, "math");
+				lua.PushManagedFunction((lua) =>
+				{
+					double current = Math.Abs(lua.GetNumber(1));
+					double target = lua.GetNumber(2);
+					double increment = lua.GetNumber(3);
+
+					if (current < target)
+					{
+						lua.PushNumber(Math.Min(current + increment, target));
+					}
+					else if (current > target)
+					{
+						lua.PushNumber(Math.Max(current - increment, target));
+					}
+					else
+					{
+						lua.PushNumber(target);
+					}
+					return 1;
+				});
+				lua.SetField(-2, "Approach");
+				lua.Pop();
 				return 0;
 			});
 			lua.SetField(-2, "NativeMath");

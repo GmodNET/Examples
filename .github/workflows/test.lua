@@ -32,13 +32,22 @@ local function run_test()
 
 	-----------------------
 
-	print(jit.status())
-
 	local lua_math_Approach = benchmark("math_Approach", function()
 		return math.Approach(0,100,20)
 	end)
 
 	PrintTable(lua_math_Approach)
+
+	NativeMath()
+
+	print(type(math.Approach))
+
+	local native_math_Approach = benchmark("math_Approach", function()
+		return math.Approach(0,100,20)
+	end)
+
+	PrintTable(native_math_Approach)
+	
 
 	-----------------------
 
