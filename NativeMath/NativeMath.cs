@@ -21,7 +21,6 @@ namespace NativeMath
 
 			handles.Add(lua.PushManagedFunction((lua) =>
 			{
-				Console.WriteLine("native mafs");
 				lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
 				lua.GetField(-1, "math");
 				handles.Add(lua.PushManagedFunction((lua) =>
@@ -45,6 +44,25 @@ namespace NativeMath
 					return 1;
 				}));
 				lua.SetField(-2, "Approach");
+				lua.Pop();
+
+				lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
+				lua.GetField(-1, "math");
+				handles.Add(lua.PushManagedFunction((lua) =>
+				{
+					double x1 = lua.GetNumber(1);
+					double y1 = lua.GetNumber(2);
+					double x2 = lua.GetNumber(3);
+					double y2 = lua.GetNumber(4);
+
+					double xd = x2 - x1;
+					double yd = y2 - y1;
+
+					lua.PushNumber(Math.Sqrt(xd * xd + yd * yd));
+
+					return 1;
+				}));
+				lua.SetField(-2, "Distance");
 				lua.Pop();
 				return 0;
 			}));

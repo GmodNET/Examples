@@ -21,31 +21,39 @@ local function benchmark_thousand(name, fn)
 	return elapsed
 end
 
+local function math_Approach()
+	benchmark("math_Approach", function()
+		local current = 0
+		for i=0,10000 do
+			current = math.Approach(current,100,0.01)
+		end
+		print(current)
+	end)
+end
+
+local function math_Distance()
+	benchmark("math_Distance", function()
+		local current = 0
+		for i=0,10000 do
+			current = math.Distance(current,0,200,100)
+		end
+		print(current)
+	end)
+end
+
 local function run_test()
 	local module_loaded = dotnet.load("NativeMath")
 	assert(module_loaded)
 
 	-----------------------
 
-
-	benchmark("math_Approach", function()
-		local current = 0
-		for i=0,1000 do
-			current = math.Approach(current,100,0.1)
-		end
-		print(current)
-	end)
+	math_Approach()
+	math_Distance()
 
 	NativeMath()
 
-	benchmark("math_Approach", function()
-		local current = 0
-		for i=0,1000 do
-			current = math.Approach(current,100,0.1)
-		end
-		print(current)
-	end)
-
+	math_Approach()
+	math_Distance()
 
 	-----------------------
 
