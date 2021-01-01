@@ -1,5 +1,6 @@
 using GmodNET.API;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace NativeMath
@@ -10,17 +11,20 @@ namespace NativeMath
 
 		public string ModuleVersion => "0.0.1";
 
-		private GCHandle NativeMathHandle;
+		private List<GCHandle> handles;
 
 		public void Load(ILua lua, bool is_serverside, ModuleAssemblyLoadContext assembly_context)
 		{
 			lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
-			NativeMathHandle = lua.PushManagedFunction((lua) =>
+
+			handles = new();
+
+			handles.Add(lua.PushManagedFunction((lua) =>
 			{
 				Console.WriteLine("native mafs");
 				lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
 				lua.GetField(-1, "math");
-				lua.PushManagedFunction((lua) =>
+				handles.Add(lua.PushManagedFunction((lua) =>
 				{
 					double current = Math.Abs(lua.GetNumber(1));
 					double target = lua.GetNumber(2);
@@ -39,18 +43,22 @@ namespace NativeMath
 						lua.PushNumber(target);
 					}
 					return 1;
-				});
+				}));
 				lua.SetField(-2, "Approach");
 				lua.Pop();
 				return 0;
-			});
+			}));
 			lua.SetField(-2, "NativeMath");
 			lua.Pop();
 		}
 
 		public void Unload(ILua lua)
 		{
-			NativeMathHandle.Free();
+			foreach (var handle in handles)
+			{
+				handle.Free();
+			}
+			handles = null;
 		}
 	}
 }
