@@ -27,19 +27,23 @@ local function run_test()
 
 	-----------------------
 
-	local current = 0
 
 	benchmark("math_Approach", function()
-		current = math.Approach(0,100,0.1)
-		donothingwithit(current)
+		local current = 0
+		for i=0,1000 do
+			current = math.Approach(0,100,0.1)
+		end
+		print(current)
 	end)
 
 	NativeMath()
 
-	current = 0
 	benchmark("math_Approach", function()
-		current = math.Approach(current,100,0.1)
-		donothingwithit(current)
+		local current = 0
+		for i=0,1000 do
+			current = math.Approach(0,100,0.1)
+		end
+		print(current)
 	end)
 
 
