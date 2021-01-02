@@ -18,19 +18,19 @@ namespace NativeMath
 		private List<GCHandle> handles;
 
 		[UnmanagedCallersOnly(CallConvs = new Type[] { typeof(CallConvCdecl) })]
-		private static int CalculateSHA256(IntPtr luaState)
+		private static int CalculateHash(IntPtr luaState)
 		{
 			ILua lua = GmodInterop.GetLuaFromState(luaState);
-			SHA256 sha256 = SHA256.Create();
-			string data = lua.GetString(1);
-			byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(data));
+			string hashName = lua.GetString(1);
+			string data = lua.GetString(2);
+			HashAlgorithm hashAlgorithm = HashAlgorithm.Create(hashName);
+			byte[] hash = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(data));
 			int hashLength = hash.Length;
 			StringBuilder builder = new();
 			for (int i = 0; i < hashLength; i++)
 			{
 				builder.Append(hash[i].ToString("X2"));
 			}
-			Console.WriteLine($"SHA256({data}): {builder}");
 			lua.PushString(builder.ToString());
 			return 1;
 		}
@@ -40,14 +40,11 @@ namespace NativeMath
 			handles = new();
 
 			lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
-			lua.CreateTable();
 			unsafe
 			{
-				lua.PushCFunction(&CalculateSHA256);
-
-				lua.SetField(-2, "CalculateSHA256");
+				lua.PushCFunction(&CalculateHash);
+				lua.SetField(-2, "CalculateHash");
 			}
-			lua.SetField(-2, "HashCalc");
 			lua.Pop();
 		}
 
