@@ -13,6 +13,11 @@ local function run_test()
 	local sha256_unicode = CalculateHash("SHA256","☭")
 	assert(sha256_unicode==string.upper("d7f6fc82e3665ba40899bbf7bf6dc6f5c7f349ea054f6360c1d983f01c07601a"))
 
+	local md5 = CalculateHash("MD5","test")
+	assert(md5==string.upper("098f6bcd4621d373cade4e832627b4f6"))
+
+	local md5_unicode = CalculateHash("MD5","☭")
+	assert(md5_unicode==string.upper("7da15a125400bc658992457c218d7d47"))
 	-----------------------
 
 	local module_unloaded = dotnet.unload("HashCalc")
