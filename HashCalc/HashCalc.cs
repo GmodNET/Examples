@@ -30,6 +30,7 @@ namespace NativeMath
 			{
 				builder.Append(hash[i].ToString("X2"));
 			}
+			Console.WriteLine($"SHA256({data}): {hash}");
 			lua.PushString(builder.ToString());
 			return 2;
 		}
