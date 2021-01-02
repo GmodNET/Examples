@@ -24,8 +24,14 @@ namespace NativeMath
 			SHA256 sha256 = SHA256.Create();
 			string data = lua.GetString(1);
 			byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(data));
-			lua.PushString(Encoding.UTF8.GetString(hash));
-			return 1;
+			int hashLength = hash.Length;
+			StringBuilder builder = new();
+			for (int i = 0; i < hashLength; i++)
+			{
+				builder.Append(hash[i].ToString("X2"));
+			}
+			lua.PushString(builder.ToString());
+			return 2;
 		}
 
 		public void Load(ILua lua, bool is_serverside, ModuleAssemblyLoadContext assembly_context)
