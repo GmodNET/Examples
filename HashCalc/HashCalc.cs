@@ -32,7 +32,7 @@ namespace NativeMath
 			}
 			Console.WriteLine($"SHA256({data}): {builder}");
 			lua.PushString(builder.ToString());
-			return 2;
+			return 1;
 		}
 
 		public void Load(ILua lua, bool is_serverside, ModuleAssemblyLoadContext assembly_context)
