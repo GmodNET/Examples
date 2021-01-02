@@ -1,7 +1,7 @@
 name: Build & Test
 on:
   push:
-    branches: [ main, NativeMath ]
+    branches: [ main, HashCalc ]
   pull_request:
     branches: [ main ]
 jobs:
@@ -28,12 +28,12 @@ jobs:
         tar -xvzf gmoddotnet.tar.gz -C ./gmod/garrysmod/lua/bin
         rm -rfv gmoddotnet.tar.gz
     - name: Build Module
-      run: dotnet publish NativeMath/NativeMath.csproj --configuration Release --framework net5 -o ./gmod/garrysmod/lua/bin/Modules/NativeMath
+      run: dotnet publish HashCalc/HashCalc.csproj --configuration Release --framework net5 -o ./gmod/garrysmod/lua/bin/Modules/HashCalc
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: NativeMath linux-x64
-        path: ./gmod/garrysmod/lua/bin/Modules/NativeMath/*
+        name: HashCalc linux-x64
+        path: ./gmod/garrysmod/lua/bin/Modules/HashCalc/*
         retention-days: 10
     - name: Copy test.lua
       run: cp .github/workflows/test.lua ./gmod/garrysmod/lua/autorun
@@ -72,12 +72,12 @@ jobs:
         mkdir ./gmod/garrysmod/lua/bin
         powershell -Command 'Expand-Archive -LiteralPath ./gmoddotnet.zip -DestinationPath ./gmod/garrysmod/lua/bin'
     - name: Build Module
-      run: dotnet publish NativeMath/NativeMath.csproj --configuration Release --framework net5 -o ./gmod/garrysmod/lua/bin/Modules/NativeMath
+      run: dotnet publish HashCalc/HashCalc.csproj --configuration Release --framework net5 -o ./gmod/garrysmod/lua/bin/Modules/HashCalc
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: NativeMath win-x64
-        path: ./gmod/garrysmod/lua/bin/Modules/NativeMath/*
+        name: HashCalc win-x64
+        path: ./gmod/garrysmod/lua/bin/Modules/HashCalc/*
         retention-days: 10
     - name: Copy test.lua
       run: cp .github/workflows/test.lua ./gmod/garrysmod/lua/autorun
@@ -111,6 +111,6 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: NativeMath osx-x64
-        path: NativeMath/bin/Release/net5/osx-x64/publish/*
+        name: HashCalc osx-x64
+        path: HashCalc/bin/Release/net5/osx-x64/publish/*
         retention-days: 10
