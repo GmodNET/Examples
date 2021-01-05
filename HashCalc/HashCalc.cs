@@ -17,10 +17,8 @@ namespace NativeMath
 
 		private List<GCHandle> handles;
 
-		[UnmanagedCallersOnly(CallConvs = new Type[] { typeof(CallConvCdecl) })]
-		private static int CalculateHash(IntPtr luaState)
+		private static int CalculateHash(ILua lua)
 		{
-			ILua lua = GmodInterop.GetLuaFromState(luaState);
 			string hashName = lua.GetString(1);
 			string data = lua.GetString(2);
 			HashAlgorithm hashAlgorithm = HashAlgorithm.Create(hashName);
@@ -40,11 +38,9 @@ namespace NativeMath
 			handles = new();
 
 			lua.PushSpecial(SPECIAL_TABLES.SPECIAL_GLOB);
-			unsafe
-			{
-				lua.PushCFunction(&CalculateHash);
-				lua.SetField(-2, "CalculateHash");
-			}
+			GCHandle handle = lua.PushManagedFunction(CalculateHash);
+			handles.Add(handle);
+			lua.SetField(-2, "CalculateHash");
 			lua.Pop();
 		}
 
